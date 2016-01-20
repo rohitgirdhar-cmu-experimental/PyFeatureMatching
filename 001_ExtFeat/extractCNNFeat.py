@@ -7,12 +7,21 @@ import argparse
 import matplotlib.pyplot as plt
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
 import locker
+import time
 
 
 def save_feat(feat, outfpath):
   # save using hdf5
   with h5py.File(outfpath, 'w') as f:
       f.create_dataset('feat', data=feat, compression="gzip", compression_opts=9)
+
+
+last_print = -1
+def tic_toc_print(msg, n=1):
+  global last_print
+  if time.time() - last_print > n:
+    print msg
+    last_print = time.time()
 
 
 BASE_CAFFE_PATH = '/home/rgirdhar/Software/vision/caffe_new/'  # w.r.t yoda
@@ -51,10 +60,11 @@ with open(args['list']) as f:
   imgslist = f.read().splitlines()
 
 for impath in imgslist:
-  im = plt.imread(os.path.join(args['dir'], impath))
   outfpath = os.path.join(args['outdir'], impath + '.h5')
   if not locker.lock(outfpath):
     continue
+  tic_toc_print('Working on ' + impath)
+  im = plt.imread(os.path.join(args['dir'], impath))
   in_ = transformer.preprocess('data', im)
 
   net.blobs['data'].reshape(1, *in_.shape)
