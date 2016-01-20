@@ -7,28 +7,19 @@ import argparse
 import matplotlib.pyplot as plt
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
 import locker
-import time
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../Utils/'))
+from FeatStor import save_feat
+from PrintUtil import TicTocPrint
 
-
-def save_feat(feat, outfpath):
-  # save using hdf5
-  with h5py.File(outfpath, 'w') as f:
-      f.create_dataset('feat', data=feat, compression="gzip", compression_opts=9)
-
-
-last_print = -1
-def tic_toc_print(msg, n=1):
-  global last_print
-  if time.time() - last_print > n:
-    print msg
-    last_print = time.time()
-
+tic_toc_print = TicTocPrint()
 
 BASE_CAFFE_PATH = '/home/rgirdhar/Software/vision/caffe_new/'  # w.r.t yoda
 
 parser = argparse.ArgumentParser(description='Extract Features')
 parser.add_argument('-m', '--mode', type=str, default='cpu',
     help='Run on [gpu/cpu]')
+parser.add_argument('-v', '--device', type=int, default=0,
+    help='The GPU device to run on. Applicable only if running in GPU mode.')
 parser.add_argument('-i', '--list', type=str, required=True,
     help='File with list of images to run on')
 parser.add_argument('-d', '--dir', type=str, default='',
@@ -46,6 +37,8 @@ args = vars(parser.parse_args())
 
 sys.path.append(os.path.join(BASE_CAFFE_PATH, 'caffe_' + args['mode'], 'python'))
 import caffe
+if args['mode'] == 'gpu':
+  caffe.set_device(args['device'])
 # create caffe transformer
 im_ht = 227
 im_wd = 227
