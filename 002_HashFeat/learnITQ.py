@@ -3,6 +3,7 @@ import os
 import sys
 import argparse
 import numpy as np
+import h5py
 import random
 random.seed(1)
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
@@ -50,8 +51,8 @@ for impath in imgslist:
     break
 
 allfeats = np.squeeze(np.array(allfeats))
-allfeats[np.isnan(allfeats)] = 0
-allfeats[np.isinf(allfeats)] = 0
+allfeats[np.isnan(allfeats)] = 0.001
+allfeats[np.isinf(allfeats)] = 0.001
 mean, pc, R = ITQ.train(allfeats, 12)
 with h5py.File(outfpath) as f:
   f.create_dataset('R', data=R, compression="gzip", compression_opts=9)
