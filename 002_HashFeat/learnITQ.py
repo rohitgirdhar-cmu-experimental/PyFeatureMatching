@@ -25,6 +25,8 @@ parser.add_argument('-o', '--outpath', type=str, required=True,
     help='Output hdf5 file path to store the learnt parameters')
 parser.add_argument('-n', '--numfeat', type=int, default=100000,
     help='Number of features to use for learning ITQ')
+parser.add_argument('-b', '--nbits', type=int, default=256,
+    help='Number of bits final representation')
 
 args = vars(parser.parse_args())
 
@@ -51,9 +53,9 @@ for impath in imgslist:
     break
 
 allfeats = np.squeeze(np.array(allfeats))
-allfeats[np.isnan(allfeats)] = 0.001
-allfeats[np.isinf(allfeats)] = 0.001
-mean, pc, R = ITQ.train(allfeats, 12)
+allfeats[np.isnan(allfeats)] = 0
+allfeats[np.isinf(allfeats)] = 0
+mean, pc, R = ITQ.train(allfeats, args['nbits'])
 with h5py.File(outfpath) as f:
   f.create_dataset('R', data=R, compression="gzip", compression_opts=9)
   f.create_dataset('pc', data=pc, compression="gzip", compression_opts=9)
