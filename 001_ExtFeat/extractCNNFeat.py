@@ -2,7 +2,6 @@ import numpy as np
 from PIL import Image
 import os
 import sys
-import h5py
 import argparse
 import matplotlib.pyplot as plt
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
