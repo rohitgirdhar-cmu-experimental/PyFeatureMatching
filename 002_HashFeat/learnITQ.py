@@ -5,7 +5,7 @@ import argparse
 import numpy as np
 import h5py
 import random
-random.seed(1)
+random.seed(5)
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
 import locker
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../Utils/'))
@@ -52,7 +52,7 @@ for impath in imgslist:
   if len(allfeats) >= nFeat:
     break
 
-allfeats = np.squeeze(np.array(allfeats))
+allfeats = np.squeeze(np.array(allfeats)).astype(np.float64)
 allfeats[np.isnan(allfeats)] = 0
 allfeats[np.isinf(allfeats)] = 0
 mean, pc, R = ITQ.train(allfeats, args['nbits'])

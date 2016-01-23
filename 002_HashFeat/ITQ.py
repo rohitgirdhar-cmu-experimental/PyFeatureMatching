@@ -1,9 +1,21 @@
 import numpy as np
 from scipy import linalg as LA
+import h5py
+import os
 
+PCA_CACHE_FPATH = 'pca.cache.h5'
 def train(feats, nbits, NITER=50):
   print('Computing PCA')
-  feats, pc, mean = PCA(feats, nbits)
+  if os.path.exists(PCA_CACHE_FPATH):
+    with h5py.File(PCA_CACHE_FPATH, 'r') as f:
+      pc = f['pc'].value
+      mean = f['mean'].value
+    feats = transformPCA(feats, pc, mean)
+  else:
+    feats, pc, mean = PCA(feats, nbits)
+    with h5py.File(PCA_CACHE_FPATH, 'w') as f:
+      f.create_dataset('pc', data=pc)
+      f.create_dataset('mean', data=mean)
   
   rot_matrix = np.random.randn(nbits, nbits)
   u_matrix, _, _ = np.linalg.svd(rot_matrix)
@@ -11,9 +23,9 @@ def train(feats, nbits, NITER=50):
   for iter in range(NITER):
     print('Running iter %d' % iter)
     Z = np.dot(feats, rot_matrix)
-    UX = np.ones(np.shape(Z)) * -1;
+    UX = np.ones(np.shape(Z)) * -1
     UX[Z >= 0] = 1
-    C = np.dot(UX.transpose(), feats);
+    C = np.dot(UX.transpose(), feats)
     ub, _, ua = np.linalg.svd(C)
     rot_matrix_old = rot_matrix.copy()
     rot_matrix = np.array(ua.transpose().dot(ub.transpose()))
@@ -36,6 +48,8 @@ def PCA(data, dims_rescaled_data=2):
   # calculate eigenvectors & eigenvalues of the covariance matrix
   # use 'eigh' rather than 'eig' since R is symmetric, 
   # the performance gain is substantial
+  R[np.isnan(R)] = 0
+  R[np.isinf(R)] = 0
   evals, evecs = LA.eigh(R)
   # sort eigenvalue in decreasing order
   idx = np.argsort(evals)[::-1]
@@ -49,4 +63,9 @@ def PCA(data, dims_rescaled_data=2):
   # and return the re-scaled data, eigenvalues, and eigenvectors
   #return np.dot(evecs.T, data.T).T, eigenvalues, eigenvectors
   return np.dot(data, evecs), evecs, mean_
+
+def transformPCA(feats, pc, mean):
+  feats -= mean
+  feats = np.dot(feats, pc)
+  return feats
 
