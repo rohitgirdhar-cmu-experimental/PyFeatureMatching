@@ -67,3 +67,10 @@ def transformPCA(feats, pc, mean):
   feats = np.dot(feats, pc)
   return feats
 
+def hash(feats, pc, mean, R):
+  pcfeats = transformPCA(feats, pc, mean)
+  hash = np.dot(pcfeats, R)
+  hash[hash >= 0] = 1
+  hash[hash < 0] = 0
+  return hash.astype('bool')
+
