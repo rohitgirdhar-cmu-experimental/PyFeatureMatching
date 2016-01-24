@@ -55,8 +55,13 @@ for impath in imgslist:
 allfeats = np.squeeze(np.array(allfeats)).astype(np.float64)
 allfeats[np.isnan(allfeats)] = 0
 allfeats[np.isinf(allfeats)] = 0
+
+# V.IMP to normalize each row by L2 norm, else mean/PCA etc calculations get screwed due to overflows
+norms = np.sum(np.abs(allfeats)**2,axis=-1)**(1./2)
+allfeats = allfeats / norms[:, np.newaxis]
+
 mean, pc, R = ITQ.train(allfeats, args['nbits'])
-with h5py.File(outfpath) as f:
+with h5py.File(outfpath, 'w') as f:
   f.create_dataset('R', data=R, compression="gzip", compression_opts=9)
   f.create_dataset('pc', data=pc, compression="gzip", compression_opts=9)
   f.create_dataset('mean', data=mean, compression="gzip", compression_opts=9)

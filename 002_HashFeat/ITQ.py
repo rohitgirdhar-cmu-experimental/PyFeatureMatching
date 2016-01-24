@@ -48,8 +48,6 @@ def PCA(data, dims_rescaled_data=2):
   # calculate eigenvectors & eigenvalues of the covariance matrix
   # use 'eigh' rather than 'eig' since R is symmetric, 
   # the performance gain is substantial
-  R[np.isnan(R)] = 0
-  R[np.isinf(R)] = 0
   evals, evecs = LA.eigh(R)
   # sort eigenvalue in decreasing order
   idx = np.argsort(evals)[::-1]
