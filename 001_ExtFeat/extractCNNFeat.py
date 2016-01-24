@@ -4,9 +4,8 @@ import os
 import sys
 import argparse
 import matplotlib.pyplot as plt
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
-import locker
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../Utils/'))
+import locker
 from FeatStor import save_feat
 from PrintUtil import TicTocPrint
 
