@@ -35,6 +35,7 @@ with h5py.File(args['hashes'], 'r') as f:
 
 nResort = args['resort']
 imid = -1
+feat_dim = -1
 for impath in imgslist:
   imid += 1
   outfpath = os.path.join(args['outdir'], impath + '.h5')
@@ -49,7 +50,13 @@ for impath in imgslist:
   top_matches = m[0, :nResort]
   actFeat = []
   for tm in top_matches.tolist():
-    actFeat.append(load_feat(os.path.join(args['featdir'], imgslist[tm] + '.h5')))  
+    try:
+      feat = load_feat(os.path.join(args['featdir'], imgslist[tm] + '.h5'))
+      feat_dim = np.shape(feat)[0]
+    except:
+      sys.stderr.write('Unable to read feature from %s' % imgslist[tm])
+      feat = np.zeros((feat_dim, 1))
+    actFeat.append(feat)
   actFeat = np.squeeze(np.array(actFeat))
   qFeat = actFeat[0, :]
   D2 = scipy.spatial.distance.cdist(qFeat[np.newaxis, :], actFeat, 'cosine')
