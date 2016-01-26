@@ -11,8 +11,6 @@ from PrintUtil import TicTocPrint
 
 tic_toc_print = TicTocPrint()
 
-BASE_CAFFE_PATH = '/home/rgirdhar/Software/vision/caffe_new/'  # w.r.t yoda
-
 parser = argparse.ArgumentParser(description='Extract Features')
 parser.add_argument('-i', '--list', type=str, required=True,
     help='File with list of images to run on')
@@ -61,7 +59,7 @@ for impath in imgslist:
   qFeat = actFeat[0, :]
   D2 = scipy.spatial.distance.cdist(qFeat[np.newaxis, :], actFeat, 'cosine')
   m2 = np.argsort(D2)
-  final = top_matches[m2] + 1  # always store as 1-indexed
+  final = zip(top_matches[m2].tolist()[0], D2[0,m2].astype('float').tolist()[0])  # always store as 1-indexed
   with h5py.File(outfpath, 'w') as f:
     f.create_dataset('matches', data=final, compression="gzip", compression_opts=9)
 
