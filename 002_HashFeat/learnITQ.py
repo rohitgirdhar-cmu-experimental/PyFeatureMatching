@@ -8,9 +8,9 @@ import random
 random.seed(5)
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
 import locker
+from PrintUtil import TicTocPrint
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../Utils/'))
 from FeatStor import load_feat
-from PrintUtil import TicTocPrint
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import ITQ
 
