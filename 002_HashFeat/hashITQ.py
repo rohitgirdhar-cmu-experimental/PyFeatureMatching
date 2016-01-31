@@ -38,16 +38,22 @@ with h5py.File(args['paramfile'], 'r') as f:
   pc = f['pc'].value
   mean = f['mean'].value
 
-nDone = 0
-allhashes = []
-for impath in imgslist:
-  tic_toc_print('Done %d / %d features' % (nDone, len(imgslist)))
+if os.path.exists(args['outpath']):
+  print('Reading the existing features')
+  with h5py.File(args['outpath'], 'r') as f:
+    allhashes = f['hashes'].value.tolist()
+else:
+  allhashes = []
+
+nDone = len(allhashes)
+for i in range(nDone, len(imgslist)):
+  impath = imgslist[i]
+  tic_toc_print('Done %d / %d features' % (i, len(imgslist)))
   try:
     featpath = os.path.join(args['dir'], impath + '.h5')
     feat = load_feat(featpath).transpose()
     hash = ITQ.hash(feat, pc, mean, R)
     allhashes.append(hash)
-    nDone += 1
   except:
     continue
 
