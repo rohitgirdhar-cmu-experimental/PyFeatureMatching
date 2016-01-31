@@ -41,7 +41,7 @@ with h5py.File(args['paramfile'], 'r') as f:
 nDone = 0
 allhashes = []
 for impath in imgslist:
-  tic_toc_print('Done %d features' % nDone)
+  tic_toc_print('Done %d / %d features' % (nDone, len(imgslist)))
   try:
     featpath = os.path.join(args['dir'], impath + '.h5')
     feat = load_feat(featpath).transpose()

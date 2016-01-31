@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../Utils/'))
 import locker
 from FeatStor import save_feat
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
 from PrintUtil import TicTocPrint
 
 tic_toc_print = TicTocPrint()
