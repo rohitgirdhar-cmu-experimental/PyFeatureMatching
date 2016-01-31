@@ -7,6 +7,7 @@ import scipy.spatial
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../Utils/'))
 import locker
 from FeatStor import load_feat
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
 from PrintUtil import TicTocPrint
 
 tic_toc_print = TicTocPrint()
@@ -22,26 +23,38 @@ parser.add_argument('-s', '--hashes', type=str, required=True,
     help='Path to h5 file with all the hashes')
 parser.add_argument('-r', '--resort', type=int, default=100,
     help='Number of matches to resort using the actual features')
+parser.add_argument('-t', '--top', type=str, default='',
+    help='[optional] path to scores for queries, so select only those with high scores')
+parser.add_argument('-n', '--nqueries', type=int, default=-1,
+    help='[optional] Number of images to run as queries. By default (-1) => all')
 
 args = vars(parser.parse_args())
 
 with open(args['list']) as f:
   imgslist = f.read().splitlines()
 
+qimgs = range(len(imgslist))
+if len(args['top']) > 0:
+  with open(args['top']) as f:
+    scores = [float(el) for el in f.read().splitlines()]
+  qimgs = np.argsort(-np.array(scores)).tolist()
+
+if args['nqueries'] >= 0:
+  qimgs = qimgs[:args['nqueries']]
+
 with h5py.File(args['hashes'], 'r') as f:
   hashes = f['hashes'].value
 
 nResort = args['resort']
-imid = -1
 feat_dim = -1
-for impath in imgslist:
-  imid += 1
+for qid in qimgs:
+  impath = imgslist[qid]
   outfpath = os.path.join(args['outdir'], impath + '.h5')
   if not locker.lock(outfpath):
     continue
   tic_toc_print('Working on ' + impath)
 
-  h = hashes[imid]
+  h = hashes[qid]
   D = scipy.spatial.distance.cdist(h[np.newaxis, :], hashes, 'hamming')
   m = np.argsort(D)
 
