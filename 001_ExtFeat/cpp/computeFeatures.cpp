@@ -259,7 +259,8 @@ main(int argc, char *argv[]) {
       for (int l = 0; l < output.size(); l++) {
         fs::path thisoutFile = fs::change_extension(OUTDIR / imgpath, fext);
         if (output.size() > 1) {
-          thisoutFile = fs::change_extension(OUTDIR / fs::path(layers[l]) / imgpath, fext);
+          // thisoutFile = fs::change_extension(OUTDIR / fs::path(layers[l]) / imgpath, fext);
+          thisoutFile = OUTDIR / fs::path(layers[l]) / fs::path(imgpath.string() + fext);
         }
         fs::create_directories(thisoutFile.parent_path());
         if (OUTTYPE == OUTTYPE_TEXT) {
@@ -322,7 +323,7 @@ inline void dumpFeatures_hdf5(const fs::path& fpath, vector<vector<float>>& feat
   hid_t dcpl = H5Pcreate (H5P_DATASET_CREATE);
   H5Pset_deflate(dcpl, 6);
   H5Pset_chunk(dcpl, 2, cdims);
-  hid_t dataset = H5Dcreate(file, "feats", H5T_NATIVE_FLOAT, dataspace, H5P_DEFAULT, dcpl,
+  hid_t dataset = H5Dcreate(file, "feat", H5T_NATIVE_FLOAT, dataspace, H5P_DEFAULT, dcpl,
       H5P_DEFAULT);
   H5Dwrite(dataset, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, feats_raw);
 
