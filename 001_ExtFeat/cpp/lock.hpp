@@ -13,7 +13,9 @@ namespace fs = boost::filesystem;
 bool lock(fs::path fpath) {
     fs::path lock_fpath = fs::path(fpath.string() + ".lock");
     if (fs::exists(fpath) || fs::exists(lock_fpath)) return false;
-    fs::create_directories(lock_fpath);
+    try {
+      fs::create_directories(lock_fpath);
+    } catch(const boost::filesystem::filesystem_error& e) {}
     return true;
 }
 
