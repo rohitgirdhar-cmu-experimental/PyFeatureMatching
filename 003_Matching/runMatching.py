@@ -27,6 +27,8 @@ parser.add_argument('-r', '--resort', type=int, default=100,
     help='Number of matches to resort using the actual features')
 parser.add_argument('-t', '--top', type=str, default='',
     help='[optional] path to scores for queries, so select only those with high scores')
+parser.add_argument('-q', '--qlist', type=str, default='',
+    help='[optional] List of query images. Takes precedence over --top')
 parser.add_argument('-n', '--nqueries', type=int, default=-1,
     help='[optional] Number of images to run as queries. By default (-1) => all')
 
@@ -36,7 +38,16 @@ with open(args['list']) as f:
   imgslist = f.read().splitlines()
 
 qimgs = range(len(imgslist))
-if len(args['top']) > 0:
+if len(args['qlist']) > 0:
+  qimgs = []
+  with open(args['qlist']) as f:
+    for line in f:
+      try:
+        pos = imgslist.index(line)
+        qimgs.append(pos)
+      except:
+        print 'Skipping. Cant find query item:', line
+elif len(args['top']) > 0:
   with open(args['top']) as f:
     scores = [float(el) for el in f.read().splitlines()]
   qimgs = np.argsort(-np.array(scores)).tolist()
