@@ -9,5 +9,6 @@ with open(imgslistfpath) as f:
 with open(scoresfpath) as f:
   scoreslist = [float(el) for el in f.read().splitlines()]
 
-order = np.argsort(-np.array(scoreslist)) + 1  # for 1-index output
-np.savetxt(outfpath, order[:10000], delimiter='\n', fmt='%d')
+order = np.argsort(-np.array(scoreslist))  # for 1-index output
+imgslist = np.array(imgslist)
+np.savetxt(outfpath, imgslist[order[:10000]], delimiter='\n', fmt='%s')
