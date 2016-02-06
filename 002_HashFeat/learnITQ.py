@@ -27,6 +27,8 @@ parser.add_argument('-n', '--numfeat', type=int, default=100000,
     help='Number of features to use for learning ITQ')
 parser.add_argument('-b', '--nbits', type=int, default=256,
     help='Number of bits final representation')
+parser.add_argument('-f', '--featfrac', type=float, default=1.0,
+    help='Resize the image feature by this fraction')
 
 args = vars(parser.parse_args())
 
@@ -45,9 +47,10 @@ for impath in imgslist:
   tic_toc_print('Read %d features' % len(allfeats))
   try:
     featpath = os.path.join(args['dir'], impath + '.h5')
-    feat = load_feat(featpath).transpose()
+    feat = load_feat(featpath, args['featfrac']).transpose()
     allfeats.append(feat)
-  except:
+  except Exception, e:
+    tic_toc_print(e)
     continue
   if len(allfeats) >= nFeat:
     break

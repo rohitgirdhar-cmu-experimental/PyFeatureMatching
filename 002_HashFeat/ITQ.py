@@ -6,16 +6,16 @@ import os
 PCA_CACHE_FPATH = 'pca.cache.h5'
 def train(feats, nbits, NITER=50):
   print('Computing PCA')
-  if os.path.exists(PCA_CACHE_FPATH):
-    with h5py.File(PCA_CACHE_FPATH, 'r') as f:
-      pc = f['pc'].value
-      mean = f['mean'].value
-    feats = transformPCA(feats, pc, mean)
-  else:
-    feats, pc, mean = PCA(feats, nbits)
-    with h5py.File(PCA_CACHE_FPATH, 'w') as f:
-      f.create_dataset('pc', data=pc)
-      f.create_dataset('mean', data=mean)
+#  if os.path.exists(PCA_CACHE_FPATH):
+#    with h5py.File(PCA_CACHE_FPATH, 'r') as f:
+#      pc = f['pc'].value
+#      mean = f['mean'].value
+#    feats = transformPCA(feats, pc, mean)
+#  else:
+  feats, pc, mean = PCA(feats, nbits)
+#  with h5py.File(PCA_CACHE_FPATH, 'w') as f:
+#    f.create_dataset('pc', data=pc)
+#    f.create_dataset('mean', data=mean)
   
   rot_matrix = np.random.randn(nbits, nbits)
   u_matrix, _, _ = np.linalg.svd(rot_matrix)
