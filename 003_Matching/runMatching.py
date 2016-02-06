@@ -43,10 +43,12 @@ if len(args['qlist']) > 0:
   with open(args['qlist']) as f:
     for line in f:
       try:
-        pos = imgslist.index(line)
+        pos = imgslist.index(line.strip())
         qimgs.append(pos)
       except:
-        print 'Skipping. Cant find query item:', line
+        # tic_toc_print('Skipping. Cant find query item: ' + line.strip())
+        pass
+  print 'Found %d relevant queries.' % len(qimgs)
 elif len(args['top']) > 0:
   with open(args['top']) as f:
     scores = [float(el) for el in f.read().splitlines()]
