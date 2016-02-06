@@ -12,6 +12,8 @@ from PrintUtil import TicTocPrint
 
 tic_toc_print = TicTocPrint()
 
+# NOTE: It stores the (id,score) with id 0-indexed. Fix it in future!
+
 parser = argparse.ArgumentParser(description='Extract Features')
 parser.add_argument('-i', '--list', type=str, required=True,
     help='File with list of images to run on')

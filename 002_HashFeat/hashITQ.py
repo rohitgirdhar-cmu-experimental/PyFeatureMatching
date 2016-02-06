@@ -23,6 +23,8 @@ parser.add_argument('-p', '--paramfile', type=str, required=True,
     help='Hdf5 file path to store the learnt parameters')
 parser.add_argument('-o', '--outpath', type=str, required=True,
     help='Hdf5 file to store output hashes')
+parser.add_argument('-f', '--fracfeat', type=float, default=1,
+    help='Fraction of the feat to resize to')
 
 args = vars(parser.parse_args())
 
@@ -51,7 +53,9 @@ for i in range(nDone, len(imgslist)):
   tic_toc_print('Done %d / %d features' % (i, len(imgslist)))
   try:
     featpath = os.path.join(args['dir'], impath + '.h5')
-    feat = load_feat(featpath).transpose()
+    feat = load_feat(featpath, args['fracfeat']).transpose()
+    # Normalize this feature (that's how its used in training)
+    feat = feat / np.linalg.norm(feat)
     hash = ITQ.hash(feat, pc, mean, R)
     allhashes.append(hash)
   except:
