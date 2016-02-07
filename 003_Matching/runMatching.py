@@ -12,7 +12,7 @@ from PrintUtil import TicTocPrint
 
 tic_toc_print = TicTocPrint()
 
-# NOTE: It stores the (id,score) with id 0-indexed. Fix it in future!
+# NOTE: It stores the (img relpath,score)
 
 parser = argparse.ArgumentParser(description='Extract Features')
 parser.add_argument('-i', '--list', type=str, required=True,
