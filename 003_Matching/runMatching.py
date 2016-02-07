@@ -60,6 +60,7 @@ if args['nqueries'] >= 0:
 with h5py.File(args['hashes'], 'r') as f:
   hashes = f['hashes'].value
 
+imgslist_np = np.array(imgslist)
 nResort = args['resort']
 feat_dim = -1
 for qid in qimgs:
@@ -87,7 +88,7 @@ for qid in qimgs:
   qFeat = actFeat[0, :]
   D2 = scipy.spatial.distance.cdist(qFeat[np.newaxis, :], actFeat, 'cosine')
   m2 = np.argsort(D2)
-  final = zip(top_matches[m2].tolist()[0], D2[0,m2].astype('float').tolist()[0])  # always store as 1-indexed
+  final = zip(imgslist_np[top_matches[m2]].tolist()[0], D2[0,m2].astype('float').tolist()[0])  # always store as 1-indexed
   with h5py.File(outfpath, 'w') as f:
     f.create_dataset('matches', data=final, compression="gzip", compression_opts=9)
 
