@@ -29,6 +29,8 @@ parser.add_argument('-n', '--netdesc', type=str, required=True,
     help='Network prototxt')
 parser.add_argument('-q', '--netmodel', type=str, required=True,
     help='Network caffemodel')
+parser.add_argument('-s', '--dontScaleImageValues', action='store_const', const=True, default=False,
+    help='Dont scale the image values to 0 and 1. Use it PLACES NET.')
 parser.add_argument('-l', '--layer', type=str, required=True,
     help='Layer to take features from')
 
@@ -56,7 +58,11 @@ for impath in imgslist:
   if not locker.lock(outfpath):
     continue
   tic_toc_print('Working on ' + impath)
-  im = plt.imread(os.path.join(args['dir'], impath))
+  if not args['dontScaleImageValues']:
+    tic_toc_print('Using caffe.io.load_image')
+    im = caffe.io.load_image(os.path.join(args['dir'], impath))
+  else:
+    im = plt.imread(os.path.join(args['dir'], impath))
   in_ = transformer.preprocess('data', im)
 
   net.blobs['data'].reshape(1, *in_.shape)
