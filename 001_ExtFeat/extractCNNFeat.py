@@ -53,13 +53,15 @@ net = caffe.Net(args['netdesc'], args['netmodel'], caffe.TEST)
 with open(args['list']) as f:
   imgslist = f.read().splitlines()
 
+if not args['dontScaleImageValues']:
+  print 'Using CAFFE.IO.LOAD_IMAGE'
+
 for impath in imgslist:
   outfpath = os.path.join(args['outdir'], impath + '.h5')
   if not locker.lock(outfpath):
     continue
   tic_toc_print('Working on ' + impath)
   if not args['dontScaleImageValues']:
-    tic_toc_print('Using caffe.io.load_image')
     im = caffe.io.load_image(os.path.join(args['dir'], impath))
   else:
     im = plt.imread(os.path.join(args['dir'], impath))
