@@ -1,9 +1,15 @@
 import numpy as np
 
-scoresfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Scratch/002_FriendsDVD/007_SceneClassScore/002_PlaceNetFT/iter_7K/AllScores.txt'
-imgslistfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Lists/friends/AllFrames.txt'
-outfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Scratch/002_FriendsDVD/007_SceneClassScore/002_PlaceNetFT/iter_7K/Queries.txt'
-nquery = 20000
+if 0:
+  scoresfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Scratch/002_FriendsDVD/007_SceneClassScore/002_PlaceNetFT/iter_7K/AllScores.txt'
+  imgslistfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Lists/friends/AllFrames.txt'
+  outfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Scratch/002_FriendsDVD/007_SceneClassScore/002_PlaceNetFT/iter_7K/Queries.txt'
+  nquery = 40000
+elif 1:
+  scoresfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Scratch/002_FriendsDVD/007_SceneClassScore/003_FTPlaceNet_withManualLabel/iter_4K/AllScores.txt'
+  imgslistfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Lists/friends/AllFrames.txt'
+  outfpath = '/home/rgirdhar/Work/Data/014_TVShows/processed/Scratch/002_FriendsDVD/007_SceneClassScore/003_FTPlaceNet_withManualLabel/iter_4K/Queries.txt'
+  nquery = 40000
 
 with open(imgslistfpath) as f:
   imgslist = f.read().splitlines()
