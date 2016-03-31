@@ -85,8 +85,13 @@ for qid in qimgs:
       feat = np.zeros((feat_dim, 1))
     actFeat.append(feat)
   actFeat = np.squeeze(np.array(actFeat))
-  qFeat = actFeat[0, :]
-  D2 = scipy.spatial.distance.cdist(qFeat[np.newaxis, :], actFeat, 'cosine')
+  # the top feature is not necessarily the one I want, so can't just take actFeat[0] (multiple could have hamming 0)
+  try:
+    qFeat = load_feat(os.path.join(args['featdir'], impath + '.h5')).reshape((1,-1))
+  except:
+    sys.stderr.write('Unable to read QUERY feature from %s' % imname)
+    qFeat = np.zeros((feat_dim, 1))
+  D2 = scipy.spatial.distance.cdist(qFeat, actFeat, 'cosine')
   m2 = np.argsort(D2)
   final = zip(imgslist_np[top_matches[m2]].tolist()[0], D2[0,m2].astype('float').tolist()[0])  # always store as 1-indexed
   with h5py.File(outfpath, 'w') as f:
