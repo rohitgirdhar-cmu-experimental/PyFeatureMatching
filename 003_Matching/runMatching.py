@@ -31,6 +31,8 @@ parser.add_argument('-q', '--qlist', type=str, default='',
     help='[optional] List of query images. Takes precedence over --top')
 parser.add_argument('-n', '--nqueries', type=int, default=-1,
     help='[optional] Number of images to run as queries. By default (-1) => all')
+parser.add_argument('-d', '--considerRadius', type=int, default=0,
+    help='[optional] Force consideration of images around the query, irrespective of itq. Useful for video frames.')
 
 args = vars(parser.parse_args())
 
@@ -75,6 +77,11 @@ for qid in qimgs:
   m = np.argsort(D)
 
   top_matches = m[0, :nResort]
+  if args['considerRadius'] > 0:
+    top_matches = np.unique(np.concatenate((top_matches, 
+        np.arange(qid, qid-args['considerRadius'], -1), 
+        np.arange(qid, qid+args['considerRadius'], 1)), axis=0))
+  tic_toc_print('Re-ranking %d images' % len(top_matches))
   actFeat = []
   for tm in top_matches.tolist():
     try:
