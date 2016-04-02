@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser(description='Extract Features')
 parser.add_argument('-i', '--list', type=str, required=True,
     help='File with list of images to run on')
 parser.add_argument('-f', '--featdir', type=str, default='',
-    help='Features directory')
+    help='Features directory (used only for re-ranking)')
 parser.add_argument('-o', '--outdir', type=str, default='',
     help='Output directory')
 parser.add_argument('-s', '--hashes', type=str, required=True,
