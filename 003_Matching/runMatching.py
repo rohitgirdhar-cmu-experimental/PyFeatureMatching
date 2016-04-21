@@ -65,12 +65,12 @@ with h5py.File(args['hashes'], 'r') as f:
 imgslist_np = np.array(imgslist)
 nResort = args['resort']
 feat_dim = -1
-for qid in qimgs:
+for qcurcount,qid in enumerate(qimgs):
   impath = imgslist[qid]
   outfpath = os.path.join(args['outdir'], impath + '.h5')
   if not locker.lock(outfpath):
     continue
-  tic_toc_print('Working on ' + impath)
+  tic_toc_print('Working on %s (%d/%d)' % (impath, qcurcount+1, len(qimgs)))
 
   h = hashes[qid]
   D = scipy.spatial.distance.cdist(h[np.newaxis, :], hashes, 'hamming')
