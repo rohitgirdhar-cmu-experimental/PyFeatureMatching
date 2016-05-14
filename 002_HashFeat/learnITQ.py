@@ -4,6 +4,7 @@ import sys
 import argparse
 import numpy as np
 import h5py
+import subprocess
 import random
 random.seed(5)
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils/python/'))
@@ -64,6 +65,7 @@ norms = np.sum(np.abs(allfeats)**2,axis=-1)**(1./2)
 allfeats = allfeats / norms[:, np.newaxis]
 
 mean, pc, R = ITQ.train(allfeats, args['nbits'])
+subprocess.call('mkdir -p `dirname %s`' % outfpath, shell=True)
 with h5py.File(outfpath, 'w') as f:
   f.create_dataset('R', data=R, compression="gzip", compression_opts=9)
   f.create_dataset('pc', data=pc, compression="gzip", compression_opts=9)
